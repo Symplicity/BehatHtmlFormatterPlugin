@@ -161,24 +161,23 @@ class Behat2Renderer implements RendererInterface {
      */
     public function renderBeforeFeature($obj)
     {
+        $feature = $obj->getCurrentFeature();
 
         //feature head
         $print = '
         <div class="feature">
             <h2>
-                <span id="feat'.$obj->getCurrentFeature()->getId().'" class="keyword"> Feature: </span>
-                <span class="title">'.$obj->getCurrentFeature()->getName().'</span>
+                <span id="feat'.$feature->getId().'" class="keyword"> Feature: </span>
+                <span class="title">'.$feature->getName().'</span>
             </h2>
-            <p>'.$obj->getCurrentFeature()->getDescription().'</p>
-            <ul class="tags">';
-        foreach($obj->getCurrentFeature()->getTags() as $tag) {
+            <p>'.$feature->getDescription().'</p>
+            <ul class="tags"><li class="path">'.basename($feature->getFile()).'</li>';
+        foreach($feature->getTags() as $tag) {
             $print .= '
                 <li>@'.$tag.'</li>';
         }
         $print .= '
             </ul>';
-
-        //TODO path is missing (?)
 
         return $print;
     }
@@ -190,15 +189,17 @@ class Behat2Renderer implements RendererInterface {
      */
     public function renderAfterFeature($obj)
     {
+        $feature = $obj->getCurrentFeature();
+
         //list of results
         $print = '
-            <div class="featureResult '.$obj->getCurrentFeature()->getPassedClass().'">Feature has '.$obj->getCurrentFeature()->getPassedClass();
+            <div class="featureResult '.$feature->getPassedClass().'">Feature has '.$feature->getPassedClass();
 
         //percent only if failed scenarios
-        if($obj->getCurrentFeature()->getTotalAmountOfScenarios() > 0 && $obj->getCurrentFeature()->getPassedClass() === 'failed') {
+        if($feature->getTotalAmountOfScenarios() > 0 && $feature->getPassedClass() === 'failed') {
             $print .= '
-                <span>Scenarios passed : '.round($obj->getCurrentFeature()->getPercentPassed(), 2).'%,
-                Scenarios failed : '.round($obj->getCurrentFeature()->getPercentFailed(), 2).'%</span>';
+                <span>Scenarios passed : '.round($feature->getPercentPassed(), 2).'%,
+                Scenarios failed : '.round($feature->getPercentFailed(), 2).'%</span>';
         }
 
         $print .= '
