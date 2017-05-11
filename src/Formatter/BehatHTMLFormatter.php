@@ -538,6 +538,7 @@ class BehatHTMLFormatter implements Formatter {
      */
     public function onAfterStepTested(AfterStepTested $event)
     {
+        $this->currentScenario->setScreenshotName($this->currentScenario->getName() . $event->getStep()->getLine());
         $result = $event->getTestResult();
 
         /** @var Step $step */

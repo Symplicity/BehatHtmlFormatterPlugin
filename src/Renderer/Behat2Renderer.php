@@ -391,16 +391,18 @@ class Behat2Renderer implements RendererInterface {
                             <span class="path">'.$strPath.'</span>'
                             . $arguments . '
                         </div>';
+
+        $relativeScreenshotPath = 'assets/screenshots/' . $feature->getScreenshotFolder() . '/' . $scenario->getScreenshotName();
+        $fullScreenshotPath = $obj->getOutputPath() . '/' . $relativeScreenshotPath;
+        if(file_exists($fullScreenshotPath))
+        {
+            $print .= '<a href="' . $relativeScreenshotPath . '" target="_blank">Screenshot</a>';
+        }
+
         $exception = $step->getException();
         if(!empty($exception)) {
-            $relativeScreenshotPath = 'assets/screenshots/' . $feature->getScreenshotFolder() . '/' . $scenario->getScreenshotName();
-            $fullScreenshotPath = $obj->getOutputPath() . '/' . $relativeScreenshotPath;
             $print .= '
                         <pre class="backtrace">'.$step->getException().'</pre>';
-            if(file_exists($fullScreenshotPath))
-            {
-                $print .= '<a href="' . $relativeScreenshotPath . '">Screenshot</a>';
-            }
         }
         $print .= '
                     </li>';
