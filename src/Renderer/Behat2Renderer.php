@@ -151,7 +151,12 @@ class Behat2Renderer implements RendererInterface {
      */
     public function renderAfterSuite($obj)
     {
-        return '';
+        $print = '';
+        if (defined('VIDEO_RECORDING_URL')) {
+            $now = date('Y-m-d h:i:s a');
+            $print = '<div class="path"><a href="' . VIDEO_RECORDING_URL . '">Video Recorded at ' . $now . '</a></div>';
+        }
+        return $print;
     }
 
     /**
@@ -162,7 +167,6 @@ class Behat2Renderer implements RendererInterface {
     public function renderBeforeFeature($obj)
     {
         $feature = $obj->getCurrentFeature();
-
         //feature head
         $print = '
         <div class="feature">
@@ -216,10 +220,11 @@ class Behat2Renderer implements RendererInterface {
      */
     public function renderBeforeScenario($obj)
     {
+        $now = date('Y-m-d h:i:s a');
         //scenario head
         $print = '
             <div class="scenario">
-                <ul class="tags">';
+                <ul class="tags"><li class="path">' . $now . '</li>';
         foreach($obj->getCurrentScenario()->getTags() as $tag) {
             $print .= '
                     <li>@'.$tag.'</li>';
