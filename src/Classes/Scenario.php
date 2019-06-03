@@ -54,7 +54,7 @@ class Scenario
 
     public function setScreenshotName($scenarioName)
     {
-        $this->screenshotName = preg_replace('/\W/', '', $scenarioName) . '.png';
+        $this->screenshotName = md5($scenarioName) . '.png';
     }
 
     /**
