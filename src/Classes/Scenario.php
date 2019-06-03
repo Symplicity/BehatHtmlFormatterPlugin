@@ -20,6 +20,8 @@ class Scenario
     private $tags;
     private $loopCount;
     private $screenshotName;
+    // For backwards compatibility until all apps upgrade to behat-steps 3.3.0
+    private $oldScreenshotName;
 
     /**
      * @var bool
@@ -52,9 +54,15 @@ class Scenario
         return $this->screenshotName;
     }
 
+    public function getOldScreenshotName()
+    {
+        return $this->oldScreenshotName;
+    }
+
     public function setScreenshotName($scenarioName)
     {
         $this->screenshotName = md5($scenarioName) . '.png';
+        $this->oldScreenshotName = preg_replace('/\W/', '', $scenarioName) . '.png';
     }
 
     /**

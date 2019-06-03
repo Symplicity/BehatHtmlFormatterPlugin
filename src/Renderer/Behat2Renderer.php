@@ -399,11 +399,16 @@ class Behat2Renderer implements RendererInterface {
 
         $relativeScreenshotPath = 'assets/screenshots/' . $feature->getScreenshotFolder() . '/' . $scenario->getScreenshotName();
         $fullScreenshotPath = $obj->getOutputPath() . '/' . $relativeScreenshotPath;
-        if(file_exists($fullScreenshotPath))
-        {
+        if (file_exists($fullScreenshotPath)) {
             $print .= '<a href="' . $relativeScreenshotPath . '" target="_blank">Screenshot</a>';
+        } else {
+            // For backwards compatibility until all apps upgrade to behat-steps 3.3.0
+            $relativeScreenshotPath = 'assets/screenshots/' . $feature->getScreenshotFolder() . '/' . $scenario->getOldScreenshotName();
+            $fullScreenshotPath = $obj->getOutputPath() . '/' . $relativeScreenshotPath;
+            if (file_exists($fullScreenshotPath)) {
+                $print .= '<a href="' . $relativeScreenshotPath . '" target="_blank">Screenshot</a>';
+            }
         }
-
         $exception = $step->getException();
         if(!empty($exception)) {
             $print .= '
