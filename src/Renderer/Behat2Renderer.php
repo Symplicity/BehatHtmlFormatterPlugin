@@ -11,6 +11,8 @@ use Behat\Gherkin\Node\TableNode;
 
 class Behat2Renderer implements RendererInterface
 {
+    private $timer;
+
     /**
      * Renders before an exercice.
      *
@@ -246,6 +248,7 @@ class Behat2Renderer implements RendererInterface
      */
     public function renderBeforeScenario($obj)
     {
+        $this->timer = time();
         $now = date('Y-m-d h:i:s a');
         //scenario head
         $print = '
@@ -392,6 +395,13 @@ class Behat2Renderer implements RendererInterface
      */
     public function renderAfterStep($obj)
     {
+        $timeStr = '';
+        if ($this->timer) {
+            $time = (time() - $this->timer);
+            if ($time) {
+                $timeStr = " ({$time}s)";
+            }
+        }
         $feature = $obj->getCurrentFeature();
         $scenario = $obj->getCurrentScenario();
 
@@ -428,13 +438,12 @@ class Behat2Renderer implements RendererInterface
         if ('Table' == $argumentType) {
             $arguments = '<br><pre class="argument">'.$this->renderTableNode($step->getArguments()).'</pre>';
         }
-
         $print = '
                     <li class="'.$stepResultClass.'">
                         <div class="step">
                             <span class="keyword">'.$step->getKeyWord().' </span>
                             <span class="text">'.htmlentities($step->getText()).' </span>
-                            <span class="path">'.$strPath.'</span>'
+                            <span class="path">'.$strPath.$timeStr.'</span>'
                             .$arguments.'
                         </div>';
 
@@ -457,7 +466,7 @@ class Behat2Renderer implements RendererInterface
         }
         $print .= '
                     </li>';
-
+        $this->timer = time();
         return $print;
     }
 
